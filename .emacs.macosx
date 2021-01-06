@@ -1,0 +1,307 @@
+;; No splash screen please ... jeez
+(setq inhibit-startup-message t)
+
+(setq c-basic-offset 4)
+(setq column-number-mode t)
+
+;; spaces instead of tabs
+(setq-default indent-tabs-mode nil)
+(c-set-offset 'brace-list-open 0)
+(c-set-offset 'brace-list-entry 2)
+(c-set-offset 'label 2)
+(c-set-offset 'substatement-open 0)
+(c-set-offset 'innamespace 0)
+
+;; MACOSX config: by default "Alt" keys transmit "meta", but then "alt gr" does not produce well non -english characters
+
+(setq mac-command-modifier 'meta
+      mac-option-modifier 'none
+      default-input-method "MacOSX")
+
+
+;; do not add to kill ring on C-backspace
+(defun backward-delete-word (arg)
+  "Delete characters backward until encountering the beginning of a word.
+With argument ARG, do this that many times."
+  (interactive "p")
+  (delete-region (point) (progn (backward-word arg) (point))))
+(global-set-key [C-backspace] 'backward-delete-word)
+
+;; tab size for python
+(add-hook 'python-mode-hook
+      (lambda ()
+        (setq tab-width 4)
+        (setq python-indent-offset 4)))
+
+;; fix for UTF-8 encoding
+(define-coding-system-alias 'UTF-8 'utf-8)
+
+;; define code styles
+
+(c-add-style "postgresql"
+             '("bsd"
+               (c-auto-align-backslashes . nil)
+               (c-basic-offset . 4)
+               (c-offsets-alist . ((case-label . +)
+                                   (label . -)
+                                   (statement-case-open . +)))
+               (fill-column . 78)
+               (indent-tabs-mode . t)
+               (tab-width . 4)))
+
+; c++ mode by default for .h
+(setq auto-mode-alist(cons '("\\.h$"   . c++-mode)  auto-mode-alist))
+
+(setq auto-mode-alist(cons '("\\.m$"   . octave-mode)  auto-mode-alist))
+
+;; Write backup files to own directory
+(setq backup-directory-alist
+      `(("." . ,(expand-file-name
+                 (concat user-emacs-directory "backups")))))
+
+
+(put 'upcase-region 'disabled nil)
+
+;; IDO
+(require 'ido)
+(ido-mode t)
+
+;; subword : Process CamelCase
+(subword-mode t)
+
+
+;; add package repositories
+(require 'package)
+(package-initialize)
+
+
+;; auto complete loading
+(require 'auto-complete)
+;;(require 'auto-complete-config)
+;;(ac-config-default)
+(setq ac-use-menu-map t)
+;; Default settings
+(define-key ac-menu-map "\C-n" 'ac-next)
+(define-key ac-menu-map "\C-p" 'ac-previous)
+
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            ;; ggtags (GNU global support)
+            (ggtags-mode 1)
+            ;; C-x h will switch back / from .h / .cpp
+            (local-set-key  (kbd "C-x h") 'ff-find-other-file)
+
+            ;; autocomplete-c-headers
+            ;(require 'auto-complete-c-headers)
+            ;(add-to-list 'achead:include-directories '"/usr/include")
+            ;(add-to-list 'achead:include-directories '"/usr/include/qt4/QtCore")
+            ;(add-to-list 'achead:include-directories '"/usr/include/qt4/QtGui")
+            ;(add-to-list 'achead:include-directories '"/usr/include/c++/5")
+            ;(add-to-list 'achead:include-directories '"/usr/include/x86_64-linux-gnu/c++/5")
+            ;(add-to-list 'achead:include-directories '"/usr/include/c++/5/backward")
+            ;(add-to-list 'achead:include-directories '"/usr/lib/gcc/x86_64-linux-gnu/5/include")
+            ;(add-to-list 'achead:include-directories '"/usr/local/include")
+            ;(add-to-list 'achead:include-directories '"/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed")
+            ;(add-to-list 'achead:include-directories '"/usr/include/x86_64-linux-gnu")
+            ;(add-to-list 'ac-sources 'ac-source-c-headers)
+
+            ;; turn on semantic mode
+            ;(semantic-mode 1)
+            ;(global-ede-mode 1)
+            ;(global-semantic-idle-scheduler-mode 1)
+            ;; add semantic to autocomplete
+            ;(add-to-list 'ac-sources 'ac-source-semantic)
+
+            ;; custom project configs
+            ;;(my-projects-config)
+))
+
+;; start in maximized window
+(toggle-frame-maximized)
+(put 'downcase-region 'disabled nil)
+
+;; helper function to help replace a sexp by its eval in a kbd macro
+(defun replace-last-sexp ()
+    (interactive)
+    (let ((value (eval (preceding-sexp))))
+      (kill-sexp -1)
+      (insert (format "%S" value))))
+
+;; C-c C-c to evaluate the buffer in lisp mode
+(define-key emacs-lisp-mode-map "\C-c\C-c" 'eval-buffer)
+
+;; sets Do what I mean mode for dired (midnight commander)
+(eval-when-compile (require 'dired))
+(setq dired-dwim-target 't)
+;; key binding for wdired mode
+(add-hook 'dired-mode-hook
+          (lambda()
+            (local-set-key (kbd "C-c C-w") (lambda () (interactive) (wdired-change-to-wdired-mode)))))
+
+
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+(with-eval-after-load 'rust-mode
+  (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+
+;; magit
+(global-set-key (kbd "C-x C-g") 'magit-status)
+(setq magit-last-seen-setup-instructions "1.4.0")
+(with-eval-after-load 'magit
+  (require 'forge))
+
+;;(setq debug-on-error nil)
+;; reload file on C-x C-v
+(defun reload-file-aux (want_sudo)
+  "Reload file in the current buffer."
+  "If WANT_SUDO is t, reloads it as root."
+  "If WANT_SUDO is nil, reloads it as non-root, even when it is currently loaded as root."
+  (let* ((l (count-lines 1 (point)))
+        (fn (buffer-file-name))
+        (is_sudo (string-prefix-p "/sudo:" fn)))
+    (kill-buffer)
+    (cond
+     ((and want_sudo (not is_sudo))
+      (find-file (concat "/sudo::" fn)))
+     ((and (not want_sudo) is_sudo)
+      (find-file (replace-regexp-in-string "/sudo:[^:]*:" "" fn)))
+     ; default
+     (t
+      (find-file fn)))
+    (forward-line l)))
+  
+(defun reload-file ()
+  "Reload file in the current buffer."
+  "If it is already loaded as root, reload it as non-root"
+  (interactive)
+  (reload-file-aux nil)
+  )
+(global-set-key (kbd "C-x C-v") 'reload-file)
+
+(defun reload-file-sudo ()
+  "Reload file in the current buffer but with root perms."
+  (interactive)
+  (reload-file-aux t)
+  )
+(global-set-key (kbd "C-x V") 'reload-file-sudo)
+
+;; default font
+;;(add-to-list 'default-frame-alist '(font . "-simp-Hack-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1"))
+
+(set-face-attribute 'default nil
+                    :family "Hack" :height 150 :weight 'normal)
+
+;; org-mode
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
+
+;;(require 'org-mobile)
+;;(setq org-mobile-directory "~/org/mobile")
+;;(setq org-mobile-files '("~/org/perso.org"))
+
+;; fix some weird org mode cache issue
+(setq org-element-use-cache nil)
+
+;; haskell mode
+(add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+
+;; server
+(server-start)
+
+;; zeal-at-point
+(global-set-key (kbd "C-h z") 'zeal-at-point)
+
+(require 'projectile)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+(projectile-mode +1)
+
+;; macosx specifics
+(exec-path-from-shell-initialize)
+
+
+(defun remove-overlays-region (@begin @end)
+  "Remove overlays.
+Version 2016-11-01"
+  (interactive "r")
+  (remove-overlays @begin @end))
+
+;; key bindings for pytest
+(define-prefix-command 'pytest-map)
+
+(add-hook 'python-mode-hook
+          (lambda ()
+            (pyenv-mode)
+            (local-set-key (kbd "C-c C-t") 'pytest-map)
+            (define-key pytest-map (kbd "t") 'pytest-one)
+            (define-key pytest-map (kbd "m") 'pytest-module)
+            (flycheck-select-checker 'python-flake8)
+            ))
+
+(load-library "realgud")
+
+(require 'lsp-java)
+(add-hook 'java-mode-hook #'lsp)
+
+(global-set-key (kbd "C-x w") 'elfeed)
+
+(require 'dap-python)
+
+(dap-register-debug-template
+  "platform"
+  (list :type "python"
+        :args "runserver 8000"
+        :env '(("DEBUG" . "1"))
+        :target-module (expand-file-name "~/src/platform/ods/core/manage.py")
+        :request "launch"
+        :name "platform"
+        ))
+
+(provide '.emacs)
+
+;;; .emacs ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ac-auto-show-menu nil)
+ '(column-number-mode t)
+ '(debug-on-error t)
+ '(dimmer-fraction 0.3)
+ '(dimmer-mode t nil (dimmer))
+ '(elfeed-feeds
+   '(("https://lobste.rs/rss" general)
+     ("https://news.ycombinator.com/rss" general)
+     ("http://nullprogram.com/feed/" emacs)
+     ("http://planet.emacsen.org/atom.xml" emacs)))
+ '(elpy-rpc-virtualenv-path 'current)
+ '(explicit-bash-args '("--noediting" "--login" "-i"))
+ '(explicit-shell-file-name "/bin/bash")
+ '(flycheck-disabled-checkers nil)
+ '(flycheck-pylintrc "~/.pylintrc")
+ '(flycheck-python-flake8-executable "/usr/local/bin/flake8")
+ '(nil nil t)
+ '(org-duration-units '(("min" . 1) ("h" . 60) ("d" . 450) ("w" . 2250)))
+ '(org-return-follows-link t)
+ '(package-archives
+   '(("gnu" . "https://elpa.gnu.org/packages/")
+     ("melpa" . "http://melpa.org/packages/")))
+ '(package-selected-packages
+   '(jedi elpygen dap-mode ggtags py-isort elfeed ein pyenv-mode go-mode lsp-java yaml-mode ag realgud exec-path-from-shell pytest yasnippet git-timemachine git-link forge projectile magit flycheck-flake8 dimmer auto-complete))
+ '(py-isort-options '("-m 3"))
+ '(pytest-global-name "./run_test.sh")
+ '(realgud:pdb-command-name "~/src/platform/run_in_pdb.sh")
+ '(realgud:trepan3k-command-name "/Users/hugo/Library/Python/3.8/bin/trepan3k")
+ '(safe-local-variable-values
+   '((pyvenv-activate . platform_py2)
+     (pytest-global-name . "./run_test_locally.sh")
+     (pytest-global-name . "./run_test.sh"))))
+
+
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

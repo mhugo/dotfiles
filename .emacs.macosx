@@ -1,66 +1,42 @@
-;; No splash screen please ... jeez
+;;=====================
+;;
+;;   Global settings
+;;
+;;=====================
+
+;; installation does not work => https://github.com/jwiegley/use-package/issues/900
+;;(eval-when-compile
+;;  ;; Following line is not needed if use-package.el is in ~/.emacs.d
+;;  (add-to-list 'load-path "<path where use-package is installed>")
+;;  (require 'use-package))
+
+;; No splash screen
 (setq inhibit-startup-message t)
 
-(setq c-basic-offset 4)
 (setq column-number-mode t)
 
 ;; spaces instead of tabs
 (setq-default indent-tabs-mode nil)
-(c-set-offset 'brace-list-open 0)
-(c-set-offset 'brace-list-entry 2)
-(c-set-offset 'label 2)
-(c-set-offset 'substatement-open 0)
-(c-set-offset 'innamespace 0)
-
-;; MACOSX config: by default "Alt" keys transmit "meta", but then "alt gr" does not produce well non -english characters
-
-(setq mac-command-modifier 'meta
-      mac-option-modifier 'none
-      default-input-method "MacOSX")
 
 
 ;; do not add to kill ring on C-backspace
 (defun backward-delete-word (arg)
-  "Delete characters backward until encountering the beginning of a word.
-With argument ARG, do this that many times."
   (interactive "p")
   (delete-region (point) (progn (backward-word arg) (point))))
 (global-set-key [C-backspace] 'backward-delete-word)
 
-;; tab size for python
-(add-hook 'python-mode-hook
-      (lambda ()
-        (setq tab-width 4)
-        (setq python-indent-offset 4)))
 
 ;; fix for UTF-8 encoding
 (define-coding-system-alias 'UTF-8 'utf-8)
-
-;; define code styles
-
-(c-add-style "postgresql"
-             '("bsd"
-               (c-auto-align-backslashes . nil)
-               (c-basic-offset . 4)
-               (c-offsets-alist . ((case-label . +)
-                                   (label . -)
-                                   (statement-case-open . +)))
-               (fill-column . 78)
-               (indent-tabs-mode . t)
-               (tab-width . 4)))
-
-; c++ mode by default for .h
-(setq auto-mode-alist(cons '("\\.h$"   . c++-mode)  auto-mode-alist))
-
-(setq auto-mode-alist(cons '("\\.m$"   . octave-mode)  auto-mode-alist))
 
 ;; Write backup files to own directory
 (setq backup-directory-alist
       `(("." . ,(expand-file-name
                  (concat user-emacs-directory "backups")))))
 
-
+;; ??
 (put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
 
 ;; IDO
 (require 'ido)
@@ -84,51 +60,13 @@ With argument ARG, do this that many times."
 (define-key ac-menu-map "\C-n" 'ac-next)
 (define-key ac-menu-map "\C-p" 'ac-previous)
 
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            ;; ggtags (GNU global support)
-            (ggtags-mode 1)
-            ;; C-x h will switch back / from .h / .cpp
-            (local-set-key  (kbd "C-x h") 'ff-find-other-file)
-
-            ;; autocomplete-c-headers
-            ;(require 'auto-complete-c-headers)
-            ;(add-to-list 'achead:include-directories '"/usr/include")
-            ;(add-to-list 'achead:include-directories '"/usr/include/qt4/QtCore")
-            ;(add-to-list 'achead:include-directories '"/usr/include/qt4/QtGui")
-            ;(add-to-list 'achead:include-directories '"/usr/include/c++/5")
-            ;(add-to-list 'achead:include-directories '"/usr/include/x86_64-linux-gnu/c++/5")
-            ;(add-to-list 'achead:include-directories '"/usr/include/c++/5/backward")
-            ;(add-to-list 'achead:include-directories '"/usr/lib/gcc/x86_64-linux-gnu/5/include")
-            ;(add-to-list 'achead:include-directories '"/usr/local/include")
-            ;(add-to-list 'achead:include-directories '"/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed")
-            ;(add-to-list 'achead:include-directories '"/usr/include/x86_64-linux-gnu")
-            ;(add-to-list 'ac-sources 'ac-source-c-headers)
-
-            ;; turn on semantic mode
-            ;(semantic-mode 1)
-            ;(global-ede-mode 1)
-            ;(global-semantic-idle-scheduler-mode 1)
-            ;; add semantic to autocomplete
-            ;(add-to-list 'ac-sources 'ac-source-semantic)
-
-            ;; custom project configs
-            ;;(my-projects-config)
-))
-
 ;; start in maximized window
 (toggle-frame-maximized)
-(put 'downcase-region 'disabled nil)
 
-;; helper function to help replace a sexp by its eval in a kbd macro
-(defun replace-last-sexp ()
-    (interactive)
-    (let ((value (eval (preceding-sexp))))
-      (kill-sexp -1)
-      (insert (format "%S" value))))
+;; server
+(server-start)
 
-;; C-c C-c to evaluate the buffer in lisp mode
-(define-key emacs-lisp-mode-map "\C-c\C-c" 'eval-buffer)
+;; ==== DIRED ====
 
 ;; sets Do what I mean mode for dired (midnight commander)
 (eval-when-compile (require 'dired))
@@ -138,20 +76,13 @@ With argument ARG, do this that many times."
           (lambda()
             (local-set-key (kbd "C-c C-w") (lambda () (interactive) (wdired-change-to-wdired-mode)))))
 
-
-(add-hook 'after-init-hook #'global-flycheck-mode)
-
-(with-eval-after-load 'rust-mode
-  (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
-
-;; magit
+;; ==== MAGIT ====
 (global-set-key (kbd "C-x C-g") 'magit-status)
 (setq magit-last-seen-setup-instructions "1.4.0")
 (with-eval-after-load 'magit
   (require 'forge))
 
-;;(setq debug-on-error nil)
-;; reload file on C-x C-v
+;; ==== reload file on C-x C-v
 (defun reload-file-aux (want_sudo)
   "Reload file in the current buffer."
   "If WANT_SUDO is t, reloads it as root."
@@ -185,13 +116,38 @@ With argument ARG, do this that many times."
   )
 (global-set-key (kbd "C-x V") 'reload-file-sudo)
 
+;; ==== PROJECTILE ====
+(require 'projectile)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+(projectile-mode +1)
+
+;; ==== PYTEST ====
+;; key bindings for pytest
+(define-prefix-command 'pytest-map)
+
+(defun ods-run-test-at-point-in-pdb ()
+  "Run a platform test at point in realgud:pdb"
+  (interactive)
+  (realgud:run-debugger "pdb" 'pdb-query-cmdline
+			'pdb-parse-cmd-args
+			'realgud:pdb-minibuffer-history
+                        (concat "~/src/platform/run_test_locally.sh --pdb -x -s " (pytest-py-testable))
+                        nil))
+
+;; ==== FLYCHECK ====
+
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+(with-eval-after-load 'rust-mode
+  (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+
 ;; default font
 ;;(add-to-list 'default-frame-alist '(font . "-simp-Hack-normal-normal-normal-*-19-*-*-*-m-0-iso10646-1"))
 
 (set-face-attribute 'default nil
                     :family "Hack" :height 150 :weight 'normal)
 
-;; org-mode
+;; ==== ORG-MODE ====
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c a") 'org-agenda)
 
@@ -202,47 +158,129 @@ With argument ARG, do this that many times."
 ;; fix some weird org mode cache issue
 (setq org-element-use-cache nil)
 
-;; haskell mode
+;; ==== haskell mode
 (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
 
-;; server
-(server-start)
+;; ==== MACOSX settings ====
 
-;; zeal-at-point
-(global-set-key (kbd "C-h z") 'zeal-at-point)
+;; by default "Alt" keys transmit "meta", but then "alt gr" does not produce well non -english characters
 
-(require 'projectile)
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-(projectile-mode +1)
+(setq mac-command-modifier 'meta
+      mac-option-modifier 'none
+      default-input-method "MacOSX")
 
 ;; macosx specifics
 (exec-path-from-shell-initialize)
 
+;;=====================
+;;
+;;        C/C++
+;;
+;;=====================
 
-(defun remove-overlays-region (@begin @end)
-  "Remove overlays.
-Version 2016-11-01"
-  (interactive "r")
-  (remove-overlays @begin @end))
+(setq c-basic-offset 4)
+(c-set-offset 'brace-list-open 0)
+(c-set-offset 'brace-list-entry 2)
+(c-set-offset 'label 2)
+(c-set-offset 'substatement-open 0)
+(c-set-offset 'innamespace 0)
 
-;; key bindings for pytest
-(define-prefix-command 'pytest-map)
+
+; c++ mode by default for .h
+(setq auto-mode-alist(cons '("\\.h$"   . c++-mode)  auto-mode-alist))
+
+(setq auto-mode-alist(cons '("\\.m$"   . octave-mode)  auto-mode-alist))
+
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            ;; ggtags (GNU global support)
+            (ggtags-mode 1)
+            ;; C-x h will switch back / from .h / .cpp
+            (local-set-key  (kbd "C-x h") 'ff-find-other-file)
+
+            ;; autocomplete-c-headers
+            ;(require 'auto-complete-c-headers)
+            ;(add-to-list 'achead:include-directories '"/usr/include")
+            ;(add-to-list 'achead:include-directories '"/usr/include/qt4/QtCore")
+            ;(add-to-list 'achead:include-directories '"/usr/include/qt4/QtGui")
+            ;(add-to-list 'achead:include-directories '"/usr/include/c++/5")
+            ;(add-to-list 'achead:include-directories '"/usr/include/x86_64-linux-gnu/c++/5")
+            ;(add-to-list 'achead:include-directories '"/usr/include/c++/5/backward")
+            ;(add-to-list 'achead:include-directories '"/usr/lib/gcc/x86_64-linux-gnu/5/include")
+            ;(add-to-list 'achead:include-directories '"/usr/local/include")
+            ;(add-to-list 'achead:include-directories '"/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed")
+            ;(add-to-list 'achead:include-directories '"/usr/include/x86_64-linux-gnu")
+            ;(add-to-list 'ac-sources 'ac-source-c-headers)
+
+            ;; turn on semantic mode
+            ;(semantic-mode 1)
+            ;(global-ede-mode 1)
+            ;(global-semantic-idle-scheduler-mode 1)
+            ;; add semantic to autocomplete
+            ;(add-to-list 'ac-sources 'ac-source-semantic)
+
+            ;; custom project configs
+            ;;(my-projects-config)
+))
+
+;;=====================
+;;
+;;        Python
+;;
+;;=====================
+
+
+;; tab size for python
+(add-hook 'python-mode-hook
+      (lambda ()
+        (setq tab-width 4)
+        (setq python-indent-offset 4)))
+
+
 
 (add-hook 'python-mode-hook
           (lambda ()
             (pyenv-mode)
+            ;; Add the following in .dir-locals.el
+            ;; (python-mode . ((eval . (pyenv-mode-set "platform_py2"))))
             (local-set-key (kbd "C-c C-t") 'pytest-map)
             (define-key pytest-map (kbd "t") 'pytest-one)
+            (define-key pytest-map (kbd "g") 'ods-run-test-at-point-in-pdb)
             (define-key pytest-map (kbd "m") 'pytest-module)
             (flycheck-select-checker 'python-flake8)
+            (lsp)
+            (lsp-ui-mode)
             ))
 
+;; FIXME
 (load-library "realgud")
+
+;;=====================
+;;
+;;       (E)Lisp
+;;
+;;=====================
+
+
+;; C-c C-c to evaluate the buffer in lisp mode
+(define-key emacs-lisp-mode-map "\C-c\C-c" 'eval-buffer)
+
+
+;;=====================
+;;
+;;       LSP/DAP
+;;
+;;=====================
+
+
+(require 'lsp-mode)
+
+(define-key lsp-mode-map [remap xref-find-definitions] #'lsp-find-definition)
+(define-key lsp-mode-map [remap xref-find-references] #'lsp-find-references)
+
 
 (require 'lsp-java)
 (add-hook 'java-mode-hook #'lsp)
-
-(global-set-key (kbd "C-x w") 'elfeed)
 
 (require 'dap-python)
 
@@ -256,6 +294,8 @@ Version 2016-11-01"
         :name "platform"
         ))
 
+;;=======================
+
 (provide '.emacs)
 
 ;;; .emacs ends here
@@ -266,7 +306,7 @@ Version 2016-11-01"
  ;; If there is more than one, they won't work right.
  '(ac-auto-show-menu nil)
  '(column-number-mode t)
- '(debug-on-error t)
+ '(debug-on-error nil)
  '(dimmer-fraction 0.3)
  '(dimmer-mode t nil (dimmer))
  '(elfeed-feeds
@@ -287,15 +327,17 @@ Version 2016-11-01"
    '(("gnu" . "https://elpa.gnu.org/packages/")
      ("melpa" . "http://melpa.org/packages/")))
  '(package-selected-packages
-   '(jedi elpygen dap-mode ggtags py-isort elfeed ein pyenv-mode go-mode lsp-java yaml-mode ag realgud exec-path-from-shell pytest yasnippet git-timemachine git-link forge projectile magit flycheck-flake8 dimmer auto-complete))
+   '(use-package bind-key lsp-ui lsp-mode jedi elpygen dap-mode ggtags py-isort elfeed ein pyenv-mode go-mode lsp-java yaml-mode ag realgud exec-path-from-shell pytest yasnippet git-timemachine git-link forge projectile magit flycheck-flake8 dimmer auto-complete))
  '(py-isort-options '("-m 3"))
  '(pytest-global-name "./run_test.sh")
  '(realgud:pdb-command-name "~/src/platform/run_in_pdb.sh")
  '(realgud:trepan3k-command-name "/Users/hugo/Library/Python/3.8/bin/trepan3k")
  '(safe-local-variable-values
-   '((pyvenv-activate . platform_py2)
+   '((eval pyenv-mode-set "platform_py2")
+     (pyvenv-activate . platform_py2)
      (pytest-global-name . "./run_test_locally.sh")
-     (pytest-global-name . "./run_test.sh"))))
+     (pytest-global-name . "./run_test.sh")))
+ '(yas-global-mode t))
 
 
 

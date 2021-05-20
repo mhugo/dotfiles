@@ -14,6 +14,13 @@
   (add-to-list 'load-path "<path where use-package is installed>")
   (require 'use-package))
 
+;; subword mode in each buffer: split word on camelcase
+(global-subword-mode 1)
+;; do not ask before applying these commands
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+
 ;; No splash screen
 (setq inhibit-startup-message t)
 
@@ -38,17 +45,20 @@
       `(("." . ,(expand-file-name
                  (concat user-emacs-directory "backups")))))
 
-;; ??
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
+;; HYDRA
+(use-package hydra :ensure t)
+
+;; window movements (hydra)
+(defhydra hydra-zoom (global-map "C-x x")
+  "windows"
+  ("<left>" shrink-window-horizontally "h. shrink")
+  ("<right>" enlarge-window-horizontally "h. enlarge")
+  ("<down>" shrink-window "v. shrink")
+  ("<up>" enlarge-window "v. shrink"))
 
 ;; IDO
 (use-package ido :ensure t)
 (ido-mode t)
-
-;; subword : Process CamelCase
-(subword-mode t)
-
 
 ;; auto complete loading
 (use-package auto-complete :ensure t)
@@ -506,3 +516,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+
+;;======================= END ========================

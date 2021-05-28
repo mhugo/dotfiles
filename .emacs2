@@ -4,9 +4,24 @@
 ;;
 ;;=====================
 
+;; No splash screen
+(setq inhibit-startup-message t)
+
+(scroll-bar-mode -1)        ; Disable visible scrollbar
+(tool-bar-mode -1)          ; Disable the toolbar
+(tooltip-mode -1)           ; Disable tooltips
+(set-fringe-mode 22)        ; Give some breathing room
+
+(menu-bar-mode -1)            ; Disable the menu bar
+
+;; Set up the visible bell
+(setq visible-bell t)
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
+
+
 
 ;; installation does not work => https://github.com/jwiegley/use-package/issues/900
 (eval-when-compile
@@ -95,6 +110,12 @@
 
 (use-package git-link :ensure t)
 
+;; ==== MAGIT FORGE ====
+(use-package forge
+  :ensure t
+  :after magit)
+(setq auth-sources '("~/.authinfo"))
+
 ;; ==== reload file on C-x C-v
 (defun reload-file-aux (want_sudo)
   "Reload file in the current buffer."
@@ -158,12 +179,13 @@
   :ensure t
 
   :custom
-  (flycheck-disabled-checkers nil)
+  (flycheck-disabled-checkers '(rust-cargo))
   (flycheck-pylintrc "~/.pylintrc")
   (flycheck-python-flake8-executable "/usr/bin/flake8")
   
   :init
-  (add-hook 'after-init-hook #'global-flycheck-mode))
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+  (add-hook 'rust-mode #'flycheck-rust_setup))
 
 ;; multiple checkers for python
 (use-package flycheck-pycheckers

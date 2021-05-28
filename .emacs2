@@ -17,17 +17,6 @@
 ;; Set up the visible bell
 (setq visible-bell t)
 
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
-
-
-
-;; installation does not work => https://github.com/jwiegley/use-package/issues/900
-(eval-when-compile
-  ;; Following line is not needed if use-package.el is in ~/.emacs.d
-  (add-to-list 'load-path "<path where use-package is installed>")
-  (require 'use-package))
 
 ;; subword mode in each buffer: split word on camelcase
 (global-subword-mode 1)
@@ -35,9 +24,6 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
-
-;; No splash screen
-(setq inhibit-startup-message t)
 
 (setq column-number-mode t)
 
@@ -59,6 +45,41 @@
 (setq backup-directory-alist
       `(("." . ,(expand-file-name
                  (concat user-emacs-directory "backups")))))
+
+
+;; start in maximized window
+(toggle-frame-maximized)
+
+;; server
+(server-start)
+
+;; save and restore session
+;;(desktop-save-session 1)
+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+
+
+
+;; installation does not work => https://github.com/jwiegley/use-package/issues/900
+(eval-when-compile
+  ;; Following line is not needed if use-package.el is in ~/.emacs.d
+  (add-to-list 'load-path "<path where use-package is installed>")
+  (require 'use-package))
+
+
+
+;;======== PACKAGES ========
+
+;; modeline
+;; make sure to execute (all-the-icons-install-fonts) once
+(require 'package)
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 20)))
+
 
 ;; HYDRA
 (use-package hydra :ensure t)
@@ -83,15 +104,6 @@
 ;; Default settings
 (define-key ac-menu-map "\C-n" 'ac-next)
 (define-key ac-menu-map "\C-p" 'ac-previous)
-
-;; start in maximized window
-(toggle-frame-maximized)
-
-;; server
-(server-start)
-
-;; save and restore session
-;;(desktop-save-session 1)
 
 ;; ==== DIRED ====
 
@@ -410,7 +422,7 @@
    '(("gnu" . "https://elpa.gnu.org/packages/")
      ("melpa" . "http://melpa.org/packages/")))
  '(package-selected-packages
-   '(flycheck-pycheckers ob-http ob-restclient helm-dash flycheck-rust rust-mode httprepl flycheck lsp-python-ms restclient use-package bind-key lsp-ui lsp-mode jedi elpygen dap-mode ggtags py-isort elfeed ein pyenv-mode go-mode lsp-java yaml-mode ag realgud exec-path-from-shell pytest yasnippet git-timemachine git-link forge projectile magit flycheck-flake8 dimmer auto-complete))
+   '(doom-modeline flycheck-pycheckers ob-http ob-restclient helm-dash flycheck-rust rust-mode httprepl flycheck lsp-python-ms restclient use-package bind-key lsp-ui lsp-mode jedi elpygen dap-mode ggtags py-isort elfeed ein pyenv-mode go-mode lsp-java yaml-mode ag realgud exec-path-from-shell pytest yasnippet git-timemachine git-link forge projectile magit flycheck-flake8 dimmer auto-complete))
  '(py-isort-options '("-m" "3"))
  '(pytest-global-name "~/src/platform/run_test_locally.sh")
  '(realgud:pdb-command-name "~/src/platform/run_in_pdb.sh")

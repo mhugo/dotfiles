@@ -394,6 +394,7 @@
  '(elpy-rpc-virtualenv-path 'current)
  '(explicit-bash-args '("--noediting" "--login" "-i"))
  '(explicit-shell-file-name "/bin/bash")
+ '(flycheck-rust-cargo-executable "~/.cargo/bin/cargo")
  '(git-link-default-branch "develop")
  '(httprepl-curl-args '("-isS" "--insecure"))
  '(network-security-protocol-checks

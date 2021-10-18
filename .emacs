@@ -407,6 +407,7 @@
  '(flycheck-rust-cargo-executable "~/.cargo/bin/cargo")
  '(git-link-default-branch "develop")
  '(httprepl-curl-args '("-isS" "--insecure"))
+ '(lsp-enable-on-type-formatting nil)
  '(network-security-protocol-checks
    '((version medium)
      (compression medium)

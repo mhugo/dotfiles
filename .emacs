@@ -310,6 +310,16 @@
 ;; FIXME
 (load-library "realgud")
 
+;; black formatter
+;; requires 'black-macchiato' installed
+(use-package python-black
+  :demand t
+  :after python
+  :custom
+  (python-black-macchiato-command
+   "/usr/local/bin/black-macchiato"))
+
+
 ;;=====================
 ;;
 ;;       (E)Lisp

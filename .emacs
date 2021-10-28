@@ -374,7 +374,9 @@
   :bind (("C-c c" . restclient-http-send-current-stay-in-window)))
 
 ;; shell
-(global-set-key (kbd "C-c C-e") (lambda () (interactive) (ansi-term "/bin/bash")))
+(use-package vterm
+  :ensure t)
+(global-set-key (kbd "C-c e") 'vterm)
 
 ;; ===== FONT =====
 

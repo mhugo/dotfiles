@@ -328,6 +328,13 @@
 (use-package yaml-mode
   :ensure t)
 
+;;=====================
+;;
+;;       QML
+;;
+;;=====================
+(use-package qml-mode
+  :ensure t)
 
 
 ;;=====================
@@ -449,7 +456,7 @@
    '(("gnu" . "https://elpa.gnu.org/packages/")
      ("melpa" . "http://melpa.org/packages/")))
  '(package-selected-packages
-   '(doom-modeline flycheck-pycheckers ob-http ob-restclient helm-dash flycheck-rust rust-mode httprepl flycheck lsp-python-ms restclient use-package bind-key lsp-ui lsp-mode jedi elpygen dap-mode ggtags py-isort elfeed ein pyenv-mode go-mode lsp-java yaml-mode ag realgud exec-path-from-shell pytest yasnippet git-timemachine git-link forge projectile magit flycheck-flake8 dimmer auto-complete))
+   '(vterm doom-modeline flycheck-pycheckers ob-http ob-restclient helm-dash flycheck-rust rust-mode httprepl flycheck lsp-python-ms restclient use-package bind-key lsp-ui lsp-mode jedi elpygen dap-mode ggtags py-isort elfeed ein pyenv-mode go-mode lsp-java yaml-mode ag realgud exec-path-from-shell pytest yasnippet git-timemachine git-link forge projectile magit flycheck-flake8 dimmer auto-complete))
  '(py-isort-options '("-m" "3"))
  '(pytest-global-name "~/src/platform/run_test_locally.sh")
  '(realgud:pdb-command-name "~/src/platform/run_in_pdb.sh")

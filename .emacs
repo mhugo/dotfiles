@@ -37,6 +37,9 @@
   (delete-region (point) (progn (backward-word arg) (point))))
 (global-set-key [C-backspace] 'backward-delete-word)
 
+;; use ibuffer to list buffers
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
 
 ;; fix for UTF-8 encoding
 (define-coding-system-alias 'UTF-8 'utf-8)

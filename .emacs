@@ -251,7 +251,7 @@
 (add-hook 'c-mode-common-hook
           (lambda ()
             ;; ggtags (GNU global support)
-            (ggtags-mode 1)
+            ;;(ggtags-mode 1)
             ;; C-x h will switch back / from .h / .cpp
             (local-set-key  (kbd "C-x h") 'ff-find-other-file)
 

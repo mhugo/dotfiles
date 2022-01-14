@@ -393,6 +393,23 @@
   :ensure t
   :bind (("C-c c" . restclient-http-send-current-stay-in-window)))
 
+;; json-reformat (better json-pretty-print)
+(use-package json-reformat
+  :ensure t
+  )
+(fset 'json-pretty-print 'json-reformat-region)
+
+;; alternative to json-pretty-print and json-reformat-region
+;; it relies on Python, since the two firsts have issues with
+;; not-so-standard JSON (including unicode chars for example)
+;; FIXME
+(defun beautify-json ()
+  (interactive)
+  (let ((b (if mark-active (min (point) (mark)) (point-min)))
+        (e (if mark-active (max (point) (mark)) (point-max))))
+    (shell-command-on-region b e
+     "python -mjson.tool" (current-buffer) t)))
+
 ;; shell
 (use-package vterm
   :ensure t)

@@ -212,7 +212,7 @@
     )
 
   :custom
-  (flycheck-pycheckers-checkers '(flake8 mypy2)))
+  (flycheck-pycheckers-checkers '(flake8 mypy3)))
 
 
 ;; ==== ORG-MODE ====

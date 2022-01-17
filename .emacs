@@ -391,7 +391,7 @@
 ;; restclient (postman-like)
 (use-package restclient
   :ensure t
-  :bind (("C-c c" . restclient-http-send-current-stay-in-window)))
+  :bind (:map restclient-mode-map ("C-c c" . restclient-http-send-current-stay-in-window)))
 
 ;; json-reformat (better json-pretty-print)
 (use-package json-reformat

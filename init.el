@@ -280,6 +280,17 @@
             ;;(my-projects-config)
 ))
 
+;;
+;; dev docs
+;;
+
+(use-package devdocs :ensure t)
+
+(global-set-key (kbd "C-h d") 'devdocs-lookup)
+
+(add-hook 'python-mode-hook
+	  (lambda () (setq-local devdocs-current-docs '("python~3.7"))))
+
 ;;=====================
 ;;
 ;;        Python

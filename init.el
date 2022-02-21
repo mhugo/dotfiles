@@ -439,9 +439,14 @@
                            (goto-char after-headers)
                            ;; either the next comment or the end of the buffer
                            (let ((next-c (re-search-forward restclient-comment-start-regexp nil t)))
-                             (goto-char (if next-c next-c (point-max))))
-                           (beginning-of-line)
-                           (point))))
+                             (if next-c
+                                 (progn
+                                   (goto-char next-c)
+                                   (beginning-of-line)
+                                   (point)
+                                   )
+                               (point-max))))))
+
         (goto-char next-comment)
         (newline)
         (newline)

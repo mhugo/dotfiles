@@ -402,13 +402,16 @@
 ;; restclient (postman-like)
 (use-package restclient
   :ensure t
-  :bind (:map restclient-mode-map ("C-c c" . restclient-http-send-current-stay-in-window)))
+  :bind (:map restclient-mode-map
+              ("C-c c" . restclient-http-send-current-stay-in-window)
+              ("C-c r" . json-reformat-at-point)))
 
 ;; json-reformat (better json-pretty-print)
 (use-package json-reformat
   :ensure t
   )
-(fset 'json-pretty-print 'json-reformat-region)
+;;(fset 'json-pretty-print 'json-reformat-region)
+(fset 'json-pretty-print 'json-pretty-print-buffer)
 
 ;; alternative to json-pretty-print and json-reformat-region
 ;; it relies on Python, since the two firsts have issues with
@@ -419,7 +422,34 @@
   (let ((b (if mark-active (min (point) (mark)) (point-min)))
         (e (if mark-active (max (point) (mark)) (point-max))))
     (shell-command-on-region b e
-     "python -mjson.tool" (current-buffer) t)))
+                             "python -mjson.tool" (current-buffer) t)))
+
+(defun json-reformat-at-point ()
+  (interactive)
+  (let ((at-method (re-search-backward restclient-method-url-regexp)))
+    (when at-method
+      (let*
+          ;; just after headers
+          ((after-headers (save-excursion
+                              (goto-char (re-search-forward restclient-empty-line-regexp nil t))
+                              (forward-line 1)
+                              (point)))
+           ;; next restclient body
+           (next-comment (save-excursion
+                           (goto-char after-headers)
+                           ;; either the next comment or the end of the buffer
+                           (let ((next-c (re-search-forward restclient-comment-start-regexp nil t)))
+                             (goto-char (if next-c next-c (point-max))))
+                           (beginning-of-line)
+                           (point))))
+        (goto-char next-comment)
+        (newline)
+        (newline)
+
+        (json-reformat-region after-headers next-comment)
+
+        )))
+  )
 
 ;; shell
 (use-package vterm

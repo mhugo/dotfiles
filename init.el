@@ -288,6 +288,7 @@
 
 (global-set-key (kbd "C-h d") 'devdocs-lookup)
 
+(setq python-mode-hook ())
 (add-hook 'python-mode-hook
 	  (lambda () (setq-local devdocs-current-docs '("python~3.7"))))
 
@@ -321,6 +322,8 @@
             (define-key pytest-map (kbd "m") 'pytest-module)
             ;; C-c r calls black on region
             (local-set-key (kbd "C-c r") 'python-black-region)
+            ;; black before save
+            (python-black-on-save-mode)
             ))
 
 ;; FIXME

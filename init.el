@@ -319,6 +319,8 @@
             (define-key pytest-map (kbd "t") 'pytest-one)
             (define-key pytest-map (kbd "g") 'ods-run-test-at-point-in-pdb)
             (define-key pytest-map (kbd "m") 'pytest-module)
+            ;; C-c r calls black on region
+            (local-set-key (kbd "C-c r") 'python-black-region)
             ))
 
 ;; FIXME

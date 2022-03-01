@@ -303,28 +303,23 @@
   ;; vertical hanging for multi line imports
   (py-isort-options '("-m" "3")))
 
-;; tab size for python
 (add-hook 'python-mode-hook
       (lambda ()
+        ;; tab size for python
         (setq tab-width 4)
-        (setq python-indent-offset 4)))
-
-
-
-(add-hook 'python-mode-hook
-          (lambda ()
-            (pyenv-mode)
-            ;; Add the following in .dir-locals.el
-            ;; (python-mode . ((eval . (pyenv-mode-set "platform_py2"))))
-            (local-set-key (kbd "C-c C-t") 'pytest-map)
-            (define-key pytest-map (kbd "t") 'pytest-one)
-            (define-key pytest-map (kbd "g") 'ods-run-test-at-point-in-pdb)
-            (define-key pytest-map (kbd "m") 'pytest-module)
-            ;; C-c r calls black on region
-            (local-set-key (kbd "C-c r") 'python-black-region)
-            ;; black before save
-            (python-black-on-save-mode)
-            ))
+        (setq python-indent-offset 4)
+        (pyenv-mode)
+        ;; Add the following in .dir-locals.el
+        ;; (python-mode . ((eval . (pyenv-mode-set "platform_py2"))))
+        (local-set-key (kbd "C-c C-t") 'pytest-map)
+        (define-key pytest-map (kbd "t") 'pytest-one)
+        (define-key pytest-map (kbd "g") 'ods-run-test-at-point-in-pdb)
+        (define-key pytest-map (kbd "m") 'pytest-module)
+        ;; C-c r calls black on region
+        (local-set-key (kbd "C-c r") 'python-black-on-region-or-buffer)
+        ;; black before save
+        (python-black-on-save-mode)
+        ))
 
 ;; FIXME
 (load-library "realgud")
@@ -337,6 +332,12 @@
   :custom
   (python-black-macchiato-command
    "/usr/local/bin/black-macchiato"))
+
+(defun python-black-on-region-or-buffer ()
+  (interactive)
+  (if (region-active-p)
+      (python-black-region (region-beginning) (region-end))
+    (python-black)))
 
 
 ;;=====================

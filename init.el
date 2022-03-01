@@ -95,10 +95,6 @@
   ("<down>" shrink-window "v. shrink")
   ("<up>" enlarge-window "v. shrink"))
 
-;; IDO
-(use-package ido :ensure t)
-(ido-mode t)
-
 ;; auto complete loading
 (use-package auto-complete :ensure t)
 ;;(require 'auto-complete-config)
@@ -107,6 +103,23 @@
 ;; Default settings
 (define-key ac-menu-map "\C-n" 'ac-next)
 (define-key ac-menu-map "\C-p" 'ac-previous)
+
+;; ==== Helm =====
+(use-package helm
+  :ensure t
+  :bind (("M-x" . helm-M-x)
+         ("C-x C-f" . helm-find-files)
+         ("C-x b" . helm-buffers-list)
+         ))
+
+(use-package helm-projectile
+  :ensure t
+  :after helm)
+
+(use-package helm-ag
+  :ensure t
+  :after helm)
+
 
 ;; ==== DIRED ====
 
@@ -167,7 +180,12 @@
 
 ;; ==== PROJECTILE ====
 (use-package projectile :ensure t)
+;; projectile mode prefix key
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+(define-key (current-global-map) [remap projectile-find-file] 'helm-projectile-find-file)
+(define-key (current-global-map) [remap projectile-ag] 'helm-projectile-ag)
+
 (projectile-mode +1)
 
 (use-package ag :ensure t)

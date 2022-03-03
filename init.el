@@ -385,6 +385,9 @@
 ;; C-c C-c to evaluate the buffer in lisp mode
 (define-key emacs-lisp-mode-map "\C-c\C-c" 'eval-buffer)
 
+;; highlight corresponding parenthesis
+(show-paren-mode 1)
+
 
 ;;=====================
 ;;

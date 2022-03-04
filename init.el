@@ -319,7 +319,7 @@
 (use-package py-isort :ensure t
   :custom
   ;; vertical hanging for multi line imports
-  (py-isort-options '("-m" "3")))
+  (py-isort-options '("--profile" "black")))
 
 (add-hook 'python-mode-hook
       (lambda ()

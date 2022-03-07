@@ -12,7 +12,7 @@
 (tooltip-mode -1)           ; Disable tooltips
 (set-fringe-mode 22)        ; Give some breathing room
 
-(menu-bar-mode -1)            ; Disable the menu bar
+;;(menu-bar-mode -1)            ; Disable the menu bar
 
 ;; Set up the visible bell
 (setq visible-bell t)

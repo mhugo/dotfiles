@@ -428,20 +428,26 @@
 
 
 (use-package lsp-mode :ensure t
-  :init
-  ;; disable lsp in flycheck
-  (setq lsp-diagnostic-package :none)
-)
-(add-hook 'python-mode-hook #'lsp)
+   :init
+   ;; disable lsp in flycheck
+   (setq lsp-diagnostic-package :none)
+   :config
+   (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
+;; (add-hook 'python-mode-hook #'lsp)
 
-(setq lsp-keymap-prefix "C-c l") ;; for documentation only ?
-(define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
+;; (setq lsp-keymap-prefix "C-c l") ;; for documentation only ?
+;; (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
 
-(define-key lsp-mode-map [remap xref-find-definitions] #'lsp-find-definition)
-(define-key lsp-mode-map [remap xref-find-references] #'lsp-find-references)
+;; (define-key lsp-mode-map [remap xref-find-definitions] #'lsp-find-definition)
+;; (define-key lsp-mode-map [remap xref-find-references] #'lsp-find-references)
 
-(use-package lsp-java :ensure t)
-(add-hook 'java-mode-hook #'lsp)
+;; (use-package lsp-java :ensure t)
+;; (add-hook 'java-mode-hook #'lsp)
+
+(setq lsp-keymap-prefix "C-c l")
+
+(use-package dumb-jump :ensure t)
+(add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
 
 ;;(use-package dap-python :ensure t)
 

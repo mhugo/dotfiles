@@ -126,7 +126,7 @@
          ("C-h v" . counsel-describe-variable)
          ))
 
-(define-key counsel-find-file-map (kbd "C-d") #'ivy-alt-done) ;; launch dired on C-d
+;;(define-key counsel-find-file-map (kbd "C-d") #'ivy-alt-done) ;; launch dired on C-d
 
 (ivy-mode 1)
 

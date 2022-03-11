@@ -104,26 +104,7 @@
 (define-key ac-menu-map "\C-n" 'ac-next)
 (define-key ac-menu-map "\C-p" 'ac-previous)
 
-;; ==== Helm =====
-(comment
-(use-package helm
-  :ensure t
-  :bind (("M-x" . helm-M-x)
-         ("C-x C-f" . helm-find-files)
-         ("C-x b" . helm-buffers-list)
-         ))
-
-(use-package helm-projectile
-  :ensure t
-  :after helm)
-
-(use-package helm-ag
-  :ensure t
-  :after helm)
-
-;;(helm-mode 1)
-)
-
+;; ==== Ivy/Counsel =====
 ;; restrict counsel git grep to files with the same extension as the current buffer file
 ;; see https://emacs.stackexchange.com/questions/37247/specifying-filetype-when-using-counsel-git-grep
 (defun counsel-git-grep-current-file-extension ()

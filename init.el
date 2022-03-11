@@ -190,15 +190,15 @@
 (global-set-key (kbd "C-x V") 'reload-file-sudo)
 
 ;; ==== PROJECTILE ====
-(comment (use-package projectile :ensure t)
+;; (use-package projectile :ensure t)
 ;; projectile mode prefix key
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+;;(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
-(define-key (current-global-map) [remap projectile-find-file] 'counsel-git)
-(define-key (current-global-map) [remap projectile-ag] 'counsel-git-grep)
+;;(define-key (current-global-map) [remap projectile-find-file] 'counsel-git)
+;;(define-key (current-global-map) [remap projectile-ag] 'counsel-git-grep)
 
-(projectile-mode +1)
-)
+;;(projectile-mode +1)
+
 
 (use-package ag :ensure t)
 

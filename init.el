@@ -440,6 +440,9 @@
               ("C-c c" . restclient-http-send-current-stay-in-window)
               ("C-c r" . json-reformat-at-point)))
 
+(use-package jq-mode
+  :ensure t)
+
 ;; json-reformat (better json-pretty-print)
 (use-package json-reformat
   :ensure t

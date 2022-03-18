@@ -605,3 +605,20 @@
      (define-key restclient-response-mode-map  (kbd "C-c C-j") #'restclient-jq-interactive-result)))
 
 ;;; restclient-jq.el ends here
+
+;;==================================
+(defun emacs-protocol-handler (raw_url)
+  (let ((arguments (mapcar #'url-unhex-string (cdr (split-string raw_url "/+")))))
+    (when arguments
+      (let ((command (car arguments))
+            (command-args (cdr arguments)))
+        (message (format "command: %s" command))
+        (cond ((string= command "bookmark")
+               (let ((url (car command-args))
+                     (title (cadr command-args)))
+                 (message (format "Bookmark URL:%s TITLE:%s" url title)))))))))
+
+(provide 'init)
+;;; init.el ends here
+
+

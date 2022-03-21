@@ -104,6 +104,9 @@
 (define-key ac-menu-map "\C-n" 'ac-next)
 (define-key ac-menu-map "\C-p" 'ac-previous)
 
+(use-package projectile
+  :ensure t)
+
 ;; ==== Ivy/Counsel =====
 ;; restrict counsel git grep to files with the same extension as the current buffer file
 ;; see https://emacs.stackexchange.com/questions/37247/specifying-filetype-when-using-counsel-git-grep
@@ -116,10 +119,12 @@
 
 (use-package counsel
   :ensure t
+  :after projectile
   :bind (("M-x" . counsel-M-x)
          ("C-x C-f" . counsel-find-file)
          ("C-x b" . counsel-switch-buffer)
          ("C-c p f" . counsel-git)
+         ("C-c p F" . projectile-find-file)
          ("C-c p s s" . counsel-git-grep)
          ("C-c p s S" . counsel-git-grep-current-file-extension)
          ("C-h f" . counsel-describe-function)

@@ -253,6 +253,9 @@
 ;; ==== haskell mode
 (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
 
+;; ==== Jenkinsfile mode
+(use-package jenkinsfile-mode :ensure t)
+
 ;;=====================
 ;;
 ;;        C/C++

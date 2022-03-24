@@ -132,6 +132,7 @@
          ))
 
 ;;(define-key counsel-find-file-map (kbd "C-d") #'ivy-alt-done) ;; launch dired on C-d
+(define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
 
 (ivy-mode 1)
 

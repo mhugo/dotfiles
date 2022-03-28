@@ -131,9 +131,9 @@
          ("C-h v" . counsel-describe-variable)
          )
   :init
+  (ivy-mode 1)
   (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done))
 
-(ivy-mode 1)
 
 
 

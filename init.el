@@ -250,6 +250,11 @@
 ;; fix some weird org mode cache issue
 (setq org-element-use-cache nil)
 
+(use-package org-bullets
+  :ensure t
+  :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  )
+
 ;; ==== haskell mode
 (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
 

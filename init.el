@@ -622,19 +622,21 @@
 
 ;;; restclient-jq.el ends here
 
-;;==================================
-(defun emacs-protocol-handler (raw_url)
-  (let ((arguments (mapcar #'url-unhex-string (cdr (split-string raw_url "/+")))))
-    (when arguments
-      (let ((command (car arguments))
-            (command-args (cdr arguments)))
-        (message (format "command: %s" command))
-        (cond ((string= command "bookmark")
-               (let ((url (car command-args))
-                     (title (cadr command-args)))
-                 (message (format "Bookmark URL:%s TITLE:%s" url title)))))))))
+;;====================
+;;    ORG PROTOCOL
+;;====================
+
+(require 'org-protocol)
+
+(setq org-capture-templates
+        '(
+          ("b" "Web Bookmarks" entry
+           (file+headline "~/Orgzly/bookmarks.org" "INBOX")
+           ;; %a : link with title
+           ;; %^g : ask for tags
+           "* %a %^g"
+           :immediate-finish nil
+           )))
 
 (provide 'init)
 ;;; init.el ends here
-
-

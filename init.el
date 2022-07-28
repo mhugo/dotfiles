@@ -520,6 +520,16 @@
   :ensure t)
 (global-set-key (kbd "C-c e") 'vterm)
 
+;; elfeed - RSS reader
+(use-package elfeed
+  :ensure t)
+
+(setq elfeed-feeds
+      '("https://simonwillison.net/atom/entries/"
+        "https://simonwillison.net/atom/links/"
+        "https://nullprogram.com/feed/"
+        "https://kx.studio/News/?action=feed"))
+
 ;; ===== FONT =====
 
 (set-face-attribute 'default nil

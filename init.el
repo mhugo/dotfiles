@@ -335,6 +335,23 @@
   ;; vertical hanging for multi line imports
   (py-isort-options '("--profile" "black")))
 
+(defun shell-command-on-buffer (command)
+  (let ((line (line-number-at-pos)))
+    ;; replace buffer with output of shell command
+    (shell-command-on-region (point-min) (point-max) command nil t)
+    ;; restore cursor position
+    (goto-line line)
+    (recenter-top-bottom)))
+
+(defun python-convert-to-py37 ()
+  (interactive)
+  (shell-command-on-buffer "~/.pyenv/versions/platform-py37/bin/pyupgrade --py3-plus --py36-plus --py37-plus -"))
+
+(defun python-convert-type-annotations ()
+  (interactive)
+  (shell-command-on-buffer "cat - >/tmp/com2ann.i && ~/.pyenv/versions/last/bin/com2ann -s /tmp/com2ann.i -o /tmp/com2ann.o && cat /tmp/com2ann.o"))
+
+
 (add-hook 'python-mode-hook
       (lambda ()
         ;; tab size for python

@@ -639,7 +639,56 @@
       "Run a jq expression on the output")
      (define-key restclient-response-mode-map  (kbd "C-c C-j") #'restclient-jq-interactive-result)))
 
+(defun restclient-decode-url ()
+  (interactive)
+  (save-excursion
+    (goto-char (restclient-current-min))
+    (when (re-search-forward "?" (line-end-position)
+                             ; return nil when not found instead of signaling an error
+                             t)
+      (replace-match "\n- ")
+      (beginning-of-line)
+      (let ((block-start (point)))
+        (while (re-search-forward "&" (line-end-position) t)
+          (replace-match "\n- "))
+      
+        ;; now we are at the end of the "- " parameters block
+        (let ((block-end (point)))
+
+          (goto-char block-start)
+          (while (looking-at "- ")
+            (when (re-search-forward "=\\(.*\\)" (line-end-position) t)
+              (message "%s" (match-string 1))
+              (replace-match (url-unhex-string (match-string 0))
+                                        ; fixedcase
+                             nil
+                                        ; literal
+                             t))
+            (forward-line)
+            (beginning-of-line))
+          
+          )
+        )
+)))
+
+
 ;;; restclient-jq.el ends here
+
+(defun func-region (start end func)
+  "run a function over the region between START and END in current buffer."
+  (save-excursion
+    (let ((text (delete-and-extract-region start end)))
+      (insert (funcall func text)))))
+
+(defun urlencode-region (start end)
+  "urlencode the region between START and END in current buffer."
+  (interactive "r")
+  (func-region start end #'url-hexify-string))
+
+(defun urldecode-region (start end)
+  "de-urlencode the region between START and END in current buffer."
+  (interactive "r")
+  (func-region start end #'url-unhex-string))
 
 ;;====================
 ;;    ORG PROTOCOL

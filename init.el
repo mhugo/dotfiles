@@ -59,6 +59,9 @@
 ;; save and restore session
 ;;(desktop-save-session 1)
 
+;; files with long lines
+(global-so-long-mode 1)
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)

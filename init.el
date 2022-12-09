@@ -110,6 +110,14 @@
 (use-package projectile
   :ensure t)
 
+;; ==== Expand region ====
+(use-package expand-region
+  :ensure t
+  :bind
+  ("C-*" . er/expand-region)
+  ("C-ù" . er/contract-region)
+  )
+
 ;; ==== Ivy/Counsel =====
 ;; restrict counsel git grep to files with the same extension as the current buffer file
 ;; see https://emacs.stackexchange.com/questions/37247/specifying-filetype-when-using-counsel-git-grep

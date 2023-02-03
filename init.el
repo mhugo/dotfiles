@@ -563,6 +563,11 @@
 (set-face-attribute 'default nil
                     :family "Hack" :height 150 :weight 'normal)
 
+;; which key
+
+(use-package which-key
+  :ensure t)
+(which-key-mode)
 ;;=======================
 
 (setq custom-file "~/.emacs.d/custom.el")

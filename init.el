@@ -563,6 +563,12 @@
 (set-face-attribute 'default nil
                     :family "Hack" :height 150 :weight 'normal)
 
+;; ===== Common Lisp =====
+
+(use-package slime
+  :ensure t)
+(setq inferior-lisp-program "/usr/bin/sbcl")
+
 ;; which key
 
 (use-package which-key

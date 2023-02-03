@@ -568,6 +568,15 @@
 (use-package which-key
   :ensure t)
 (which-key-mode)
+
+;; emoji
+(use-package emojify
+  :ensure t
+  :config
+  (when (member "Noto Color Emoji" (font-family-list))
+    (set-fontset-font
+     t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend)))
+  
 ;;=======================
 
 (setq custom-file "~/.emacs.d/custom.el")

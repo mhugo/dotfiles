@@ -140,6 +140,8 @@
          ("C-c p s S" . counsel-git-grep-current-file-extension)
          ("C-h f" . counsel-describe-function)
          ("C-h v" . counsel-describe-variable)
+         ("C-s" . counsel-grep-or-swiper)
+         ("C-r" . counsel-grep-or-swiper-backward)
          )
   :init
   (ivy-mode 1)

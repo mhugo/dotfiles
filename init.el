@@ -756,5 +756,19 @@
            :immediate-finish nil
            )))
 
+
+;;====================
+;;    Emacs shell
+;;====================
+
+(use-package bash-completion
+  :ensure t)
+
+(autoload 'bash-completion-dynamic-complete
+          "bash-completion"
+          "BASH completion hook")
+(add-hook 'shell-dynamic-complete-functions
+          'bash-completion-dynamic-complete)
+
 (provide 'init)
 ;;; init.el ends here

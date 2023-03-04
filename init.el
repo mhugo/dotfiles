@@ -581,6 +581,8 @@
 (set-face-attribute 'default nil
                     :family "Hack" :height 150 :weight 'normal)
 
+(set-face-attribute 'region nil :background "gold" :foreground "gtk_selection_fg_color")
+
 ;; ===== Common Lisp =====
 
 (use-package slime

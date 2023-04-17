@@ -584,7 +584,17 @@
   (when (member "Noto Color Emoji" (font-family-list))
     (set-fontset-font
      t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend)))
-  
+
+
+;; undo-tree
+;; C-_ : undo
+;; M-_ : redo
+;; C-x u : tree visualization
+(use-package undo-tree
+  :ensure t
+  :config
+  (global-undo-tree-mode))
+
 ;;=======================
 
 (setq custom-file "~/.emacs.d/custom.el")

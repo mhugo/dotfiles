@@ -611,6 +611,9 @@
   :config
   (global-undo-tree-mode))
 
+;; Prevent undo tree files from polluting your git repo
+(setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+
 ;;=======================
 
 (setq custom-file "~/.emacs.d/custom.el")

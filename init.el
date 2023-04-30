@@ -426,13 +426,27 @@
 (use-package yaml-mode
   :ensure t)
 
+
+;;=====================================
+;;
+;;          rainbow-mode
+;;
+;; minor mode to set foreground color
+;; of an hex color code to its color
+;;
+;;=====================================
+(use-package rainbow-mode
+  :ensure t)
+
 ;;=====================
 ;;
 ;;       QML
 ;;
 ;;=====================
 (use-package qml-mode
-  :ensure t)
+  :ensure t
+  :config
+  (add-hook 'qml-mode-hook #'rainbow-mode))
 
 
 ;;=====================
